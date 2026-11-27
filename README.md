@@ -14,16 +14,7 @@ The CLI writes strictly three artifacts into `<output_dir>`:
 - `report.json` — SHA-256 file manifest (`raksha-report/1`), honest counts, timing, and peak RSS
 - `records.jsonl` — deterministic per-record locators (`row:N`, JSON pointers, `doc`) and pseudonyms (`PSN-...` or `null`)
 
-### Live Interactive Demo (Stage 2)
-
-```bash
-# Terminal 1 — Offline Privacy Firewall API (port 8000)
-RAKSHA_SECRET=<your-secret> BACKEND_PORT=8000 python api_server.py
-
-# Terminal 2 — 3D/WebGL Interactive Demo Proxy (port 3000)
-PORT=3000 BACKEND_URL=http://127.0.0.1:8000 node frontend/server.mjs
-```
-Then open `http://localhost:3000` in Chrome/Edge to explore live hospital sanitization, snippet redaction, and downloadable contract bundles.
+> For the Stage 2 interactive 3D/WebGL live demo (`frontend/` + `api_server.py`) and automated test suite (`tests/`, `tools/`), see the `demo` branch.
 
 ## Architecture
 
@@ -53,7 +44,7 @@ input/ ─▶ ingest (encoding sniff, delimiter auto-detect, quarantine)
 
 - Observed dev suite (`dev/input`): **`93.26 / 100`** total (`0 / 3,230` personal data leaks across Latin, Devanagari, Hinglish, and all 6 hiding channels; `0 / 4` canaries; `4,853 / 4,855` medical values preserved; `0` wrong patient merges; `CONTRACT OK`; single-run runtime `11.251 s`).
 - Observed unseen domain-shifted benchmark (`heldout_shift`): **`91.85 / 100`** total (`0 / 577` leaks; `0 / 5` canaries; `125 / 126` medical values preserved; precision `1.00`, recall `0.943`, `F0.5 0.988`, `0` wrong merges).
-- Run test suite: `python -m pytest -v` (`18 passed`).
+- Full automated verification suite (`tests/`, `tools/`): available on the `demo` branch (`18 passed`).
 
 ## Known Limitations
 
