@@ -64,20 +64,22 @@ This installs only lightweight, offline libraries (`PyYAML`, `cryptography`, and
 
 `RAKSHA_SECRET` is required to generate cryptographic pseudonyms and date shifts. Using the **same** secret on the **same** input always produces identical output; using a **different** secret produces completely different pseudonyms and date shifts. (If `RAKSHA_SECRET` is missing or empty, the program exits cleanly with code `2` without writing any output.)
 
+For local testing and demos, you can use the ready-to-run demo key below (`secret-wards-demo-key-2026`). Replace it with your own private random secret for real evaluation or production runs.
+
 **Linux / macOS:**
 ```bash
-RAKSHA_SECRET="replace-with-your-strong-secret-key" python main.py --input /path/to/input_dir --output /path/to/output_dir
+RAKSHA_SECRET="secret-wards-demo-key-2026" python main.py --input /path/to/input_dir --output /path/to/output_dir
 ```
 
 **Windows (PowerShell):**
 ```powershell
-$env:RAKSHA_SECRET = "replace-with-your-strong-secret-key"
+$env:RAKSHA_SECRET = "secret-wards-demo-key-2026"
 python main.py --input C:\path\to\input_dir --output C:\path\to\output_dir
 ```
 
 **Windows (Command Prompt):**
 ```cmd
-set RAKSHA_SECRET=replace-with-your-strong-secret-key && python main.py --input C:\path\to\input_dir --output C:\path\to\output_dir
+set RAKSHA_SECRET=secret-wards-demo-key-2026 && python main.py --input C:\path\to\input_dir --output C:\path\to\output_dir
 ```
 
 Optional flag:
@@ -97,7 +99,76 @@ output/
 - Any file whose filename contained personal data is safely HMAC-renamed in `sanitized/` and recorded by its input SHA-256 in `report.json`.
 - Any malformed, truncated, oversized (`>50 MB`), deeply nested (`>100` JSON levels), symlink-escaping, or binary file is quarantined rather than copied raw.
 
-> **Interactive Stage 2 Demo & Full Test Suite:** For the 3D/WebGL interactive showcase (`frontend/`, `api_server.py`) and automated pytest suite (`tests/`, `tools/`), switch to the `demo` branch (`git checkout demo`). See [`docs/brief.pdf`](docs/brief.pdf) for the 2-page Project Brief.
+---
+
+## Localhost Web Preview (Interactive 3D Demo)
+
+> **Important:** The `master` branch intentionally keeps only the minimal Track 3 CLI submission (`main.py`, `src/`, `config/policy.yaml`, `docs/brief.pdf`, `raksha.toml`). Running the CLI steps above alone does **not** launch a web server — the full localhost web preview (`api_server.py` + `frontend/`) lives on the **`demo`** branch.
+
+### Preview Prerequisites
+- **Python 3.10+** (already set up in Steps 2–3 above)
+- **Node.js 18+** (no `npm install` needed — `frontend/server.mjs` uses Node.js built-in modules only)
+- **Git**
+
+### Step 1 — Switch to the `demo` Branch & Verify Python Dependencies
+
+```bash
+git checkout demo
+pip install -r requirements.txt
+```
+
+### Step 2 — Start the Backend API Server (`Terminal 1`, Port `8000`)
+
+Use the working demo key `secret-wards-demo-key-2026` (for local testing/demos only; swap in a private key for sensitive runs):
+
+**Linux / macOS:**
+```bash
+RAKSHA_SECRET="secret-wards-demo-key-2026" BACKEND_PORT=8000 CORS_ALLOW_ORIGIN="http://localhost:3000,http://127.0.0.1:3000" python api_server.py
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:RAKSHA_SECRET = "secret-wards-demo-key-2026"
+$env:BACKEND_PORT = "8000"
+$env:CORS_ALLOW_ORIGIN = "http://localhost:3000,http://127.0.0.1:3000"
+python api_server.py
+```
+
+**Windows (Command Prompt):**
+```cmd
+set RAKSHA_SECRET=secret-wards-demo-key-2026&& set BACKEND_PORT=8000&& set CORS_ALLOW_ORIGIN=http://localhost:3000,http://127.0.0.1:3000&& python api_server.py
+```
+
+*(You should see `Secret Wards API server listening on http://127.0.0.1:8000`.)*
+
+### Step 3 — Start the Frontend Proxy Server (`Terminal 2`, Port `3000`)
+
+Keep Terminal 1 open, open a second terminal in the same repository folder, and run:
+
+**Linux / macOS:**
+```bash
+PORT=3000 BACKEND_URL=http://127.0.0.1:8000 node frontend/server.mjs
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:PORT = "3000"
+$env:BACKEND_URL = "http://127.0.0.1:8000"
+node frontend/server.mjs
+```
+
+**Windows (Command Prompt):**
+```cmd
+set PORT=3000&& set BACKEND_URL=http://127.0.0.1:8000&& node frontend/server.mjs
+```
+
+### Step 4 — Open the Preview in Your Browser
+
+- Open **`http://localhost:3000`** in Chrome or Edge to explore the interactive 3D showcase.
+- Optional API health check: **`http://127.0.0.1:8000/api/health`**
+- **What works immediately vs. optional dataset:** The interactive 3D experience, live clinical snippet redaction (`/api/sanitize-snippet`), and custom file sanitization (`/api/pipeline/run` in `custom` mode) work out of the box with no extra files. Full 4-ward / 200-file practice batch runs require placing the official Track 3 kit practice dataset under `kit/dev/input/`.
+
+See [`docs/brief.pdf`](docs/brief.pdf) for the 2-page Project Brief.
 
 ---
 
