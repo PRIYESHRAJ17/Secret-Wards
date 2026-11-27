@@ -1,0 +1,13 @@
+# Secret Wards privacy & detection policy (Knight Rebels)
+age_band_years: 5
+elderly_open_band: 85
+date_shift_min_days: 30
+date_shift_max_days: 1460
+dob_policy: year_only
+pin_prefix_digits: 3
+psn_prefix: "PSN-"
+psn_chars: 10
+max_file_bytes: 52428800
+max_json_depth: 100
+regex_timeout_sec: 0.25
+min_group_size: 5

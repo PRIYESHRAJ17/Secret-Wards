@@ -1,0 +1,24 @@
+# Confidential official kit (never commit into submission repo)
+kit/
+kit_old_crlf/
+
+# Generated data, test outputs, scratch, runtime uploads
+data_gen/
+my_output/
+out/
+tmp/
+.tmp*/
+.api_runs/
+*.tmp
+frontend/uploads/
+
+# Python / Node / IDE
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+node_modules/
